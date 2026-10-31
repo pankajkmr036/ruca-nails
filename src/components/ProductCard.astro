@@ -1,0 +1,51 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { url, img, money, cap } from '../lib/site';
+interface Props { product: CollectionEntry<'products'>; }
+const { product } = Astro.props;
+const p = product.data;
+const subtitle = [cap(p.shape), ...p.style.map(cap)].join(', ');
+---
+<article
+  class="card"
+  data-shape={p.shape}
+  data-length={p.length}
+  data-style={p.style.join(' ')}
+>
+  <a href={url(`/shop/${product.id}`)} class="card-link">
+    <div class="card-img">
+      <img src={img('products', p.images[0])} alt={`${p.name} press-on nails`} loading="lazy" width="560" height="560" />
+      {!p.available && <span class="badge">Sold out</span>}
+      {p.available && p.compareAtPrice && <span class="badge badge--sale">Sale</span>}
+    </div>
+    <div class="card-body">
+      <h3>{p.name}</h3>
+      <p class="sub">{subtitle}</p>
+      <p class="price">
+        {money(p.price)}
+        {p.compareAtPrice && <s>{money(p.compareAtPrice)}</s>}
+      </p>
+    </div>
+  </a>
+  <a href={url(`/shop/${product.id}`)} class="btn btn--sm btn--block" tabindex="-1" aria-hidden="true">View details</a>
+</article>
+<style>
+  .card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 0.6rem; display: flex; flex-direction: column; gap: 0.6rem; box-shadow: var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgb(60 40 30 / 0.12); }
+  .card[hidden] { display: none; }
+  .card-link { text-decoration: none; flex: 1; }
+  .card-img { position: relative; aspect-ratio: 1; overflow: hidden; border-radius: 6px; background: var(--cream-deep); }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .card:hover .card-img img { transform: scale(1.05); }
+  .badge { position: absolute; top: 0.5rem; left: 0.5rem; background: var(--ink); color: #fff; font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 4px; }
+  .badge--sale { background: var(--plum); }
+  .card-body { text-align: center; padding-top: 0.6rem; }
+  .card-body h3 { margin: 0 0 0.1rem; font-size: 1rem; }
+  .sub { font-size: 0.82rem; color: var(--muted); margin: 0 0 0.2rem; }
+  .price { font-weight: 700; margin: 0; }
+  .price s { font-weight: 400; color: var(--muted); margin-left: 0.4rem; font-size: 0.88rem; }
+</style>

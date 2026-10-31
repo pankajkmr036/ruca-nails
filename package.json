@@ -1,0 +1,17 @@
+{
+  "name": "ruca-nails",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "crop": "node scripts/crop-mockups.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.18.2",
+    "sharp": "^0.35.5",
+    "yaml": "^2.9.1"
+  }
+}

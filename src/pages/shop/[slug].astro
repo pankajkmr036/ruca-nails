@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import OrderButtons from '../../components/OrderButtons.astro';
+import { site, url, img, money, cap, hasWhatsApp } from '../../lib/site';
+import { getProducts } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const products = await getProducts();
+  return products.map((product) => ({ params: { slug: product.id }, props: { product, products } }));
+}
+const { product, products } = Astro.props;
+const p = product.data;
+const pageUrl = new URL(url(`/shop/${product.id}`), Astro.site).href;
+const message = `Hi ${site.name}! I'd like to order "${p.name}" (${money(p.price)}).\n${pageUrl}`;
+const related = products
+  .filter((o) => o.id !== product.id && (o.data.shape === p.shape || o.data.style.some((s) => p.style.includes(s))))
+  .slice(0, 4);
+---
+<BaseLayout title={p.name} description={p.description} image={img('products', p.images[0])}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={url('/')}>Home</a><span aria-hidden="true">›</span><a href={url('/shop')}>Shop all</a><span aria-hidden="true">›</span>{p.name}
+    </nav>
+
+    <article class="pdp">
+      <div class="gallery">
+        <img id="main-img" src={img('products', p.images[0])} alt={`${p.name} press-on nails`} width="560" height="560" />
+        {p.images.length > 1 && (
+          <div class="thumbs">
+            {p.images.map((im, i) => (
+              <button type="button" class="thumb" data-src={img('products', im)} aria-label={`Show image ${i + 1}`}>
+                <img src={img('products', im)} alt="" loading="lazy" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="info">
+        <h1>{p.name}</h1>
+        <p class="price">
+          {money(p.price)}
+          {p.compareAtPrice && <s>{money(p.compareAtPrice)}</s>}
+          {!p.available && <span class="sold">Sold out</span>}
+        </p>
+        <div class="tags">
+          <a class="tag" href={url(`/shop?shape=${p.shape}`)}>{p.shape}</a>
+          <span class="tag">{p.length}</span>
+          {p.style.map((s) => <a class="tag" href={url(`/shop?style=${s}`)}>{s}</a>)}
+        </div>
+        <p class="desc">{p.description}</p>
+
+        {p.sizes.length > 0 && (
+          <div class="sizes">
+            <label for="size">Size</label>
+            <select id="size">
+              <option value="">Not sure, help me choose</option>
+              {p.sizes.map((s) => <option value={s}>{s}</option>)}
+            </select>
+          </div>
+        )}
+
+        {p.available ? (
+          <div id="order" data-message={message} data-wa={site.whatsapp}>
+            <OrderButtons message={message} label={hasWhatsApp() ? 'Order on WhatsApp' : undefined} stacked />
+          </div>
+        ) : (
+          <OrderButtons message={`Hi ${site.name}! Will "${p.name}" be back in stock?\n${pageUrl}`} label="Ask about a restock" stacked />
+        )}
+
+        <ul class="perks">
+          <li>24 nails in 12 sizes, plus a full prep kit</li>
+          <li>Reusable with proper care</li>
+          <li>{site.delivery.note}</li>
+        </ul>
+        <p class="help">New to press-ons? Read our <a href={url('/care')}>care guide</a> or <a href={url('/shapes')}>shape guide</a>.</p>
+      </div>
+    </article>
+
+    {related.length > 0 && (
+      <section class="section">
+        <div class="section-title"><h2>You may also like</h2></div>
+        <div class="grid">{related.map((r) => <ProductCard product={r} />)}</div>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+
+<script>
+  const main = document.getElementById('main-img') as HTMLImageElement | null;
+  document.querySelectorAll<HTMLButtonElement>('.thumb').forEach((t) =>
+    t.addEventListener('click', () => { if (main) main.src = t.dataset.src!; })
+  );
+  // Add the chosen size to the WhatsApp message
+  const order = document.getElementById('order');
+  const size = document.getElementById('size') as HTMLSelectElement | null;
+  const wa = order?.querySelector<HTMLAnchorElement>('a[href^="https://wa.me"]');
+  size?.addEventListener('change', () => {
+    if (!wa || !order) return;
+    const base = order.dataset.message!;
+    const msg = size.value ? base.replace('\n', `\nSize: ${size.value}\n`) : base;
+    wa.href = `https://wa.me/${order.dataset.wa}?text=${encodeURIComponent(msg)}`;
+  });
+</script>
+
+<style>
+  .pdp { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); padding: 1.5rem 0 1rem; }
+  .gallery > img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); background: var(--cream-deep); }
+  .thumbs { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+  .thumb { border: 2px solid var(--line); padding: 0; border-radius: 6px; overflow: hidden; width: 72px; height: 72px; cursor: pointer; background: none; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .info h1 { color: var(--ink); font-size: clamp(1.7rem, 3.4vw, 2.4rem); }
+  .price { font-size: 1.5rem; font-weight: 700; color: var(--teal); }
+  .price s { font-size: 1rem; color: var(--muted); font-weight: 400; margin-left: 0.5rem; }
+  .sold { font-size: 0.85rem; background: var(--ink); color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; margin-left: 0.75rem; vertical-align: middle; }
+  .tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .tags a { text-decoration: none; }
+  .desc { font-size: 1.05rem; }
+  .sizes { margin: 1.25rem 0; display: grid; gap: 0.35rem; max-width: 320px; }
+  .sizes label { font-weight: 600; }
+  .sizes select { padding: 0.65rem; border-radius: 6px; border: 1px solid var(--line); font: inherit; background: var(--paper); }
+  #order, .info > :global(.order) { max-width: 360px; margin: 1.25rem 0; }
+  .perks { padding-left: 1.1rem; color: var(--muted); font-size: 0.93rem; }
+  .perks li { margin-bottom: 0.3rem; }
+  .help { font-size: 0.93rem; }
+  .help a { color: var(--plum); }
+  @media (max-width: 760px) { .pdp { grid-template-columns: 1fr; } }
+</style>

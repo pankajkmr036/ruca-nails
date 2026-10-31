@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site, url, orderLink, hasWhatsApp } from '../lib/site';
+---
+<BaseLayout title="Contact" description={`Get in touch with ${site.name} on Instagram or WhatsApp.`}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href={url('/')}>Home</a><span aria-hidden="true">›</span>Contact</nav>
+    <header class="page-head"><h1>Let's talk nails</h1><p>Questions, custom orders or sizing help? We usually reply within a few hours.</p></header>
+    <div class="grid grid--2 contact">
+      {hasWhatsApp() && (
+        <a class="c-card" href={orderLink(`Hi ${site.name}!`)} target="_blank" rel="noopener">
+          <Icon name="whatsapp" /><h2>WhatsApp</h2><p>The fastest way to order or ask a question.</p><span class="btn btn--sm">Chat now</span>
+        </a>
+      )}
+      <a class="c-card" href={site.instagram} target="_blank" rel="noopener">
+        <Icon name="instagram" /><h2>Instagram</h2><p>DM us at {site.instagramHandle} and browse our latest work.</p><span class="btn btn--sm btn--rose">Open Instagram</span>
+      </a>
+      {site.email && (
+        <a class="c-card" href={`mailto:${site.email}`}>
+          <Icon name="mail" /><h2>Email</h2><p>{site.email}</p><span class="btn btn--sm btn--outline">Send email</span>
+        </a>
+      )}
+      <div class="c-card">
+        <Icon name="pin" /><h2>Delivery area</h2><p>{site.delivery.note}</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+<style>
+  .contact { padding-bottom: 3rem; }
+  .c-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.75rem; text-decoration: none; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+  .c-card :global(svg) { width: 34px; height: 34px; color: var(--plum); }
+  .c-card h2 { font-size: 1.25rem; margin: 0.5rem 0 0; }
+  .c-card p { color: var(--muted); }
+  a.c-card:hover { border-color: var(--rose); }
+</style>

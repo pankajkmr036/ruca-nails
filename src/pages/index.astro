@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Icon from '../components/Icon.astro';
+import { site, url, img, money } from '../lib/site';
+import { getProducts, getServices } from '../lib/content';
+
+const products = await getProducts();
+const featured = products.filter((p) => p.data.featured).slice(0, 8);
+const hot = featured.length ? featured : products.slice(0, 4);
+const services = (await getServices()).slice(0, 3);
+---
+<BaseLayout>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">{site.tagline}</p>
+        <h1>{site.hero.title}</h1>
+        <p class="lead">{site.hero.subtitle}</p>
+        <div class="hero-ctas">
+          <a class="btn" href={url(site.hero.ctaLink)}>{site.hero.ctaText}</a>
+          <a class="btn btn--outline" href={url('/services')}>View services</a>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src={img('', site.hero.image)} alt="Woman holding a cup of tea and wearing floral press-on nails" width="652" height="788" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Hot right now</h2>
+        <p>Our most-loved sets, handmade in Bengaluru.</p>
+      </div>
+      <div class="grid">
+        {hot.map((p) => <ProductCard product={p} />)}
+      </div>
+      <p class="center"><a class="btn btn--outline" href={url('/shop')}>Shop all designs</a></p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-title"><h2>How it works</h2></div>
+      <ol class="steps">
+        {site.howItWorks.map((s, i) => (
+          <li>
+            <span class="step-num">{i + 1}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {services.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <h2>Services</h2>
+          <p>Custom sets, gel extensions and nail art, made just for you.</p>
+        </div>
+        <div class="grid grid--2 svc">
+          {services.map((s) => (
+            <div class="svc-card">
+              <h3>{s.data.name}</h3>
+              <p class="svc-price">
+                {s.data.price !== undefined ? money(s.data.price) : `From ${money(s.data.priceFrom!)}`}
+              </p>
+              <p>{s.data.description}</p>
+            </div>
+          ))}
+        </div>
+        <p class="center"><a class="btn btn--outline" href={url('/services')}>All services and prices</a></p>
+      </div>
+    </section>
+  )}
+
+  <section class="section ig-cta">
+    <div class="container center">
+      <p class="eyebrow">Follow along</p>
+      <h2>See new drops first on Instagram</h2>
+      <p>Fresh designs, behind-the-scenes looks and customer looks, every week.</p>
+      <a class="btn btn--rose" href={site.instagram} target="_blank" rel="noopener">
+        <Icon name="instagram" /> Follow {site.instagramHandle}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { background: linear-gradient(110deg, var(--cream) 45%, var(--cream-deep)); overflow: hidden; }
+  .hero-inner { display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; gap: 2rem; min-height: 520px; }
+  .hero-copy { padding: 3rem 0; }
+  .lead { font-size: 1.15rem; color: var(--muted); max-width: 40ch; }
+  .hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .hero-img { align-self: end; justify-self: center; }
+  .hero-img img { max-height: 520px; width: auto; border-radius: 200px 200px 0 0; object-fit: cover; box-shadow: var(--shadow); }
+  .center { text-align: center; margin-top: 2rem; }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; counter-reset: s; }
+  .steps li { text-align: center; padding: 1.5rem 1rem; background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .step-num { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--rose-soft); color: var(--plum); font-weight: 700; font-family: var(--font-display); margin-bottom: 0.75rem; }
+  .steps p { color: var(--muted); font-size: 0.92rem; margin: 0; }
+  .svc-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+  .svc-card p { color: var(--muted); margin: 0; font-size: 0.93rem; }
+  .svc-card .svc-price { color: var(--teal); font-weight: 700; margin-bottom: 0.4rem; font-size: 1rem; }
+  .ig-cta { background: var(--rose-soft); }
+  .ig-cta .btn { margin-top: 0.5rem; }
+  @media (max-width: 760px) {
+    .hero-inner { grid-template-columns: 1fr; min-height: 0; text-align: center; }
+    .hero-copy { padding: 2.5rem 0 0; }
+    .lead { margin-inline: auto; }
+    .hero-ctas { justify-content: center; }
+    .hero-img img { max-height: 360px; }
+  }
+</style>

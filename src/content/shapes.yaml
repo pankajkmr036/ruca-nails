@@ -1,0 +1,25 @@
+# Nail shapes shown on the "Nail shapes" page. The id must match the shape used in products.
+- id: almond
+  name: Almond
+  description: Elegant and feminine. A sophisticated almond point.
+  image: almond.webp
+- id: squoval
+  name: Squoval
+  description: Classic and versatile. Straight sidewalls with soft, rounded edges.
+  image: squoval.webp
+- id: coffin
+  name: Coffin/ballerina
+  description: Trendy and sculpted. A tapered shape with a flat, squared-off tip.
+  image: coffin.webp
+- id: square
+  name: Square
+  description: Bold and modern. Crisp straight edges and clean lines.
+  image: square.webp
+- id: stiletto
+  name: Stiletto
+  description: Fierce and dramatic. A long, sharp point.
+  image: stiletto.webp
+- id: oval
+  name: Oval
+  description: Timeless and gentle. A smooth, naturally rounded silhouette.
+  image: oval.webp

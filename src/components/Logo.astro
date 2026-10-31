@@ -1,0 +1,22 @@
+---
+import { site, url } from '../lib/site';
+const [first, ...rest] = site.name.split(' ');
+---
+<a href={url('/')} class="logo" aria-label={`${site.name} home`}>
+  <svg class="logo-mark" viewBox="0 0 24 32" aria-hidden="true">
+    <path d="M4 14C4 7 7.5 2 12 2s8 5 8 12v14H4Z" fill="#c9858a" />
+    <path d="M7 14c0-5 2.2-8.5 5-8.5s5 3.5 5 8.5" fill="none" stroke="#fff" stroke-width="1.4" opacity=".7" />
+  </svg>
+  <span class="logo-text">
+    <span class="logo-name"><b>{first}</b> {rest.join(' ')}</span>
+    <span class="logo-tag">{site.tagline}</span>
+  </span>
+</a>
+<style>
+  .logo { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; color: var(--plum); }
+  .logo-mark { width: 22px; height: 30px; }
+  .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .logo-name { font-family: var(--font-display); font-size: 1.45rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+  .logo-name b { font-weight: 700; }
+  .logo-tag { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); font-weight: 600; }
+</style>

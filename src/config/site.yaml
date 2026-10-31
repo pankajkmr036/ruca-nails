@@ -1,0 +1,48 @@
+# ─────────────────────────────────────────────────────────────
+#  Ruca Nails: site settings
+#  Edit this file, commit, and push. The site rebuilds automatically.
+# ─────────────────────────────────────────────────────────────
+
+name: Ruca Nails
+tagline: Handmade press-on nails, Bengaluru
+description: Handcrafted, reusable press-on nails and nail art services in Bengaluru. Shop local, stay fab.
+
+# WhatsApp number with country code, digits only (e.g. 919876543210).
+# While this is blank, every "Order" button opens Instagram instead.
+whatsapp: ""
+
+instagram: https://www.instagram.com/ruca_nails/
+instagramHandle: "@ruca_nails"
+email: ""            # optional, shown on the contact page when filled in
+
+currency: "₹"
+
+# Thin bar at the top of every page. Leave blank ("") to hide it.
+announcement: "Launch offer: 30% off for our first 30 customers"
+
+hero:
+  title: Press-on nails, designed and delivered
+  subtitle: Handcrafted, reusable nails made to fit you. Shop local. Stay fab.
+  image: hero.webp            # file in public/images/
+  ctaText: Shop new arrivals
+  ctaLink: /shop
+
+delivery:
+  area: Bengaluru
+  note: We currently deliver only within Bengaluru, usually in 1–2 days.
+
+howItWorks:
+  - title: Browse styles
+    text: Explore ready-made sets or ask for something custom.
+  - title: Pick your set
+    text: Choose the shape, length and size that suit you.
+  - title: Message us
+    text: Order on WhatsApp or Instagram. No sign-up needed.
+  - title: Apply and slay
+    text: Local delivery in 1–2 days, with a free prep kit.
+
+# Filter options shown on the shop page
+filters:
+  shapes: [almond, squoval, coffin, square, stiletto, oval]
+  lengths: [short, medium, long]
+  styles: [floral, minimalist, gradient, glitter, matte, chrome, metallic, custom]

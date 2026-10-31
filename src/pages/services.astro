@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import OrderButtons from '../components/OrderButtons.astro';
+import { site, url, img, money } from '../lib/site';
+import { getServices, groupBy } from '../lib/content';
+const groups = groupBy(await getServices(), (s) => s.data.category);
+---
+<BaseLayout title="Services and prices" description={`${site.name} services: custom press-on sets, gel extensions, gel polish and nail art in ${site.delivery.area}.`}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href={url('/')}>Home</a><span aria-hidden="true">›</span>Services</nav>
+    <header class="page-head"><h1>Services</h1><p>From one-of-a-kind custom press-ons to salon-style gel work. Message us to book or get a quote.</p></header>
+
+    {[...groups].map(([category, items]) => (
+      <section class="group">
+        <h2>{category}</h2>
+        <div class="list">
+          {items.map((s) => (
+            <article class="svc">
+              {s.data.image && <img src={img('services', s.data.image)} alt="" loading="lazy" />}
+              <div class="svc-main">
+                <div class="svc-top">
+                  <h3>{s.data.name}</h3>
+                  <p class="svc-price">{s.data.price !== undefined ? money(s.data.price) : `From ${money(s.data.priceFrom!)}`}</p>
+                </div>
+                {s.data.duration && <p class="dur">{s.data.duration}</p>}
+                <p>{s.data.description}</p>
+                <OrderButtons size="sm" label="Enquire on WhatsApp" message={`Hi ${site.name}! I'd like to enquire about "${s.data.name}".`} />
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+<style>
+  .group { margin-bottom: 2.5rem; }
+  .group h2 { border-bottom: 2px solid var(--rose); padding-bottom: 0.4rem; display: inline-block; }
+  .list { display: grid; gap: 1rem; }
+  .svc { display: flex; gap: 1.25rem; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+  .svc img { width: 120px; height: 120px; object-fit: cover; border-radius: 6px; }
+  .svc-main { flex: 1; }
+  .svc-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; flex-wrap: wrap; }
+  .svc-top h3 { margin: 0; font-size: 1.15rem; }
+  .svc-price { font-weight: 700; color: var(--teal); margin: 0; font-size: 1.1rem; }
+  .dur { font-size: 0.85rem; color: var(--plum); margin: 0.15rem 0 0.5rem; }
+  .svc p:not(.svc-price):not(.dur) { color: var(--muted); }
+</style>

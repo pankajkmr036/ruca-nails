@@ -1,0 +1,28 @@
+---
+// "Order on WhatsApp" and "DM on Instagram" buttons. Without a WhatsApp number, only Instagram is shown.
+import Icon from './Icon.astro';
+import { site, orderLink, hasWhatsApp } from '../lib/site';
+interface Props { message: string; label?: string; size?: 'sm' | 'md'; stacked?: boolean; }
+const { message, label = 'Order on WhatsApp', size = 'md', stacked = false } = Astro.props;
+const sm = size === 'sm' ? 'btn--sm' : '';
+---
+<div class:list={['order', { stacked }]}>
+  {hasWhatsApp() && (
+    <a class:list={['btn', sm]} href={orderLink(message)} target="_blank" rel="noopener">
+      <Icon name="whatsapp" /> {label}
+    </a>
+  )}
+  <a
+    class:list={['btn', sm, hasWhatsApp() ? 'btn--outline' : '']}
+    href={site.instagram}
+    target="_blank"
+    rel="noopener"
+  >
+    <Icon name="instagram" /> {hasWhatsApp() ? 'DM on Instagram' : 'Order via Instagram DM'}
+  </a>
+</div>
+<style>
+  .order { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .order.stacked { flex-direction: column; }
+  .order.stacked .btn { width: 100%; }
+</style>

@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { url, img } from '../lib/site';
+const shapes = await getCollection('shapes');
+const lengths = [
+  { name: 'Short', text: 'Everyday-friendly and easy for typing and chores. Great for first-timers.' },
+  { name: 'Medium', text: 'The sweet spot: elegant and statement-making, but still practical.' },
+  { name: 'Long', text: 'Maximum drama for weddings, parties and photoshoots.' },
+];
+---
+<BaseLayout title="Nail shapes" description="Explore nail shapes, including almond, squoval, coffin, square, stiletto and oval, and find your perfect press-on fit.">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href={url('/')}>Home</a><span aria-hidden="true">›</span>Nail shapes</nav>
+    <header class="page-head"><h1>Explore our nail shapes</h1><p>Every shape suits a different mood. Find yours, then shop designs in that shape.</p></header>
+
+    <div class="grid grid--2 shapes">
+      {shapes.map((s) => (
+        <article class="shape">
+          <img src={img('shapes', s.data.image)} alt={`${s.data.name} nail shape`} loading="lazy" width="528" height="708" />
+          <div>
+            <h2>{s.data.name}</h2>
+            <p>{s.data.description}</p>
+            <a class="btn btn--sm" href={url(`/shop?shape=${s.id}`)}>Shop {s.data.name.split('/')[0].toLowerCase()}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <section class="section">
+      <div class="guide">
+        <h2>Length guide</h2>
+        <div class="lengths">
+          {lengths.map((l) => (
+            <div><h3>{l.name}</h3><p>{l.text}</p></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+<style>
+  .shapes { gap: 1.25rem; }
+  .shape { display: grid; grid-template-columns: 140px 1fr; gap: 1.25rem; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.75rem; box-shadow: var(--shadow); }
+  .shape img { width: 140px; height: 180px; object-fit: cover; border-radius: 6px; }
+  .shape h2 { font-size: 1.25rem; margin-bottom: 0.3rem; }
+  .shape p { color: var(--muted); font-size: 0.93rem; }
+  .guide { background: var(--cream-deep); border-radius: var(--radius); padding: clamp(1.5rem, 4vw, 2.5rem); text-align: center; }
+  .lengths { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+  .lengths div { background: var(--paper); border-radius: var(--radius); padding: 1.25rem; }
+  .lengths p { color: var(--muted); font-size: 0.93rem; margin: 0; }
+</style>

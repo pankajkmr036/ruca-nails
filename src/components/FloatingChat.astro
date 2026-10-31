@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+import { site, orderLink, hasWhatsApp } from '../lib/site';
+const wa = hasWhatsApp();
+---
+<a
+  class:list={['float', { ig: !wa }]}
+  href={wa ? orderLink(`Hi ${site.name}! I'd like to know more.`) : site.instagram}
+  target="_blank"
+  rel="noopener"
+  aria-label={wa ? 'Chat on WhatsApp' : 'Message us on Instagram'}
+>
+  <Icon name={wa ? 'whatsapp' : 'instagram'} />
+</a>
+<style>
+  .float {
+    position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60; width: 56px; height: 56px;
+    border-radius: 50%; background: #25d366; color: #fff; display: grid; place-items: center;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.2); transition: transform 0.2s;
+  }
+  .float.ig { background: linear-gradient(45deg, #f9a03f, #d62976 50%, #7b3fc2); }
+  .float:hover { transform: scale(1.07); }
+  .float :global(svg) { width: 28px; height: 28px; }
+</style>

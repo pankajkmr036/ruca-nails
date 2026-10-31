@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+import { site, url, orderLink, hasWhatsApp } from '../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="f-brand">{site.name}</p>
+      <p class="f-copy">{site.description}</p>
+    </div>
+    <div>
+      <p class="f-head">Explore</p>
+      <ul>
+        <li><a href={url('/shop')}>Shop all</a></li>
+        <li><a href={url('/shapes')}>Nail shapes</a></li>
+        <li><a href={url('/services')}>Services</a></li>
+        <li><a href={url('/care')}>Care and FAQ</a></li>
+        <li><a href={url('/contact')}>Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="f-head">Say hello</p>
+      <ul>
+        <li><a href={site.instagram} target="_blank" rel="noopener"><Icon name="instagram" /> {site.instagramHandle}</a></li>
+        {hasWhatsApp() && (
+          <li><a href={orderLink(`Hi ${site.name}!`)} target="_blank" rel="noopener"><Icon name="whatsapp" /> WhatsApp us</a></li>
+        )}
+        {site.email && <li><a href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a></li>}
+      </ul>
+    </div>
+    <div class="f-local">
+      <Icon name="pin" />
+      <p>Exclusively for {site.delivery.area} residents</p>
+    </div>
+  </div>
+  <div class="container f-bottom">© {year} {site.name}. All rights reserved.</div>
+</footer>
+<style>
+  .footer { background: var(--rose); color: #fff; padding: 3rem 0 1.25rem; margin-top: 2rem; }
+  .footer-grid { display: grid; gap: 2rem; grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+  .f-brand { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .f-copy { font-size: 0.9rem; opacity: 0.92; max-width: 34ch; }
+  .f-head { font-weight: 600; margin-bottom: 0.6rem; }
+  .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.45rem; }
+  .footer a { text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; }
+  .footer a:hover { text-decoration: underline; }
+  .footer :global(svg) { width: 18px; height: 18px; flex: none; }
+  .f-local { display: flex; gap: 0.5rem; align-items: flex-start; font-weight: 600; }
+  .f-local :global(svg) { width: 22px; height: 22px; }
+  .f-bottom { border-top: 1px solid rgb(255 255 255 / 0.35); margin-top: 2rem; padding-top: 1rem; font-size: 0.8rem; opacity: 0.9; }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+</style>

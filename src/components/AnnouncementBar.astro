@@ -1,0 +1,10 @@
+---
+import { site } from '../lib/site';
+---
+{site.announcement && <div class="announce">{site.announcement}</div>}
+<style>
+  .announce {
+    background: var(--teal); color: #fff; text-align: center; font-size: 0.88rem;
+    font-weight: 600; letter-spacing: 0.04em; padding: 0.5rem 1rem;
+  }
+</style>

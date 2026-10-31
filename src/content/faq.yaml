@@ -1,0 +1,29 @@
+# Care tips and FAQs. "section" groups entries on the care page.
+- id: apply
+  section: Care guide
+  question: How do I apply press-on nails?
+  answer: Push back cuticles, buff and wipe each nail with the alcohol pad in your kit. Pick the right size for every finger, add a thin layer of glue (or a sticky tab), press for 20–30 seconds, and avoid water for an hour.
+- id: last
+  section: Care guide
+  question: How long do they last?
+  answer: With glue, 2–3 weeks. With sticky tabs, 3–7 days, which is ideal for events. Every set is reusable when removed gently.
+- id: remove
+  section: Care guide
+  question: How do I remove them safely?
+  answer: Soak your hands in warm, soapy water with a little cuticle oil for 10–15 minutes, then gently lift from the sides with the cuticle stick. Never pull or force them off.
+- id: reuse
+  section: Care guide
+  question: Can I reuse my set?
+  answer: Yes. Remove the old adhesive with a buffer, store the nails in their box, and reapply with fresh glue or tabs.
+- id: sizing
+  section: Orders and delivery
+  question: How do I find my size?
+  answer: Each set includes 24 nails in 12 sizes, so most hands are covered. For a perfect fit, order our sizing kit or message us a photo of your hand next to a coin.
+- id: delivery
+  section: Orders and delivery
+  question: Where do you deliver?
+  answer: We deliver only within Bengaluru for now, usually in 1–2 days. Custom sets take 3–5 days.
+- id: order
+  section: Orders and delivery
+  question: How do I order and pay?
+  answer: Tap "Order on WhatsApp" or message us on Instagram with the design you like. We'll confirm the size and delivery details, then share UPI payment details.

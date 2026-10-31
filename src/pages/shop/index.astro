@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { site, url, cap } from '../../lib/site';
+import { getProducts } from '../../lib/content';
+
+const products = await getProducts();
+// Only show filter options that at least one product uses
+const used = {
+  shape: site.filters.shapes.filter((s) => products.some((p) => p.data.shape === s)),
+  length: site.filters.lengths.filter((l) => products.some((p) => p.data.length === l)),
+  style: site.filters.styles.filter((st) => products.some((p) => p.data.style.includes(st))),
+};
+const groups = [
+  { key: 'shape', label: 'Nail shape', options: used.shape },
+  { key: 'length', label: 'Nail length', options: used.length },
+  { key: 'style', label: 'Nail art style', options: used.style },
+];
+---
+<BaseLayout title="Shop all press-on nails" description={`Browse all ${site.name} press-on nail designs: almond, coffin, stiletto and more.`}>
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href={url('/')}>Home</a><span aria-hidden="true">›</span>Shop all</nav>
+    <header class="page-head">
+      <h1>Shop all</h1>
+      <p>Every set includes 24 nails in 12 sizes, plus a prep kit with glue, sticky tabs, a file and a cuticle stick.</p>
+    </header>
+
+    <div class="shop">
+      <aside class="filters" id="filters" hidden>
+        <div class="filters-head">
+          <h2>Filters</h2>
+          <button type="button" class="clear" id="clear-filters">Clear all</button>
+        </div>
+        {groups.map((g) => (
+          <fieldset>
+            <legend>{g.label}</legend>
+            {g.options.map((o) => (
+              <label><input type="checkbox" name={g.key} value={o} /> {cap(o)}</label>
+            ))}
+          </fieldset>
+        ))}
+      </aside>
+
+      <div>
+        <p class="count" id="count" aria-live="polite">{products.length} designs</p>
+        <div class="grid" id="products">
+          {products.map((p) => <ProductCard product={p} />)}
+        </div>
+        <p class="empty" id="empty" hidden>
+          No designs match these filters. <button type="button" class="clear" id="clear-empty">Clear filters</button>
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // Progressive enhancement: filters appear only when JS runs. Otherwise all products show.
+  const panel = document.getElementById('filters')!;
+  const cards = [...document.querySelectorAll<HTMLElement>('#products .card')];
+  const boxes = [...panel.querySelectorAll<HTMLInputElement>('input[type=checkbox]')];
+  const count = document.getElementById('count')!;
+  const empty = document.getElementById('empty')!;
+  panel.hidden = false;
+
+  // Pre-select from the URL, e.g. /shop?shape=almond
+  const params = new URLSearchParams(location.search);
+  boxes.forEach((b) => { if (params.getAll(b.name).includes(b.value)) b.checked = true; });
+
+  function apply() {
+    const sel: Record<string, string[]> = {};
+    boxes.filter((b) => b.checked).forEach((b) => (sel[b.name] ??= []).push(b.value));
+    let shown = 0;
+    for (const c of cards) {
+      const ok = Object.entries(sel).every(([k, vals]) => {
+        const have = (c.dataset[k] || '').split(' ');
+        return vals.some((v) => have.includes(v));
+      });
+      c.hidden = !ok;
+      if (ok) shown++;
+    }
+    count.textContent = `${shown} design${shown === 1 ? '' : 's'}`;
+    empty.hidden = shown > 0;
+    const q = new URLSearchParams();
+    Object.entries(sel).forEach(([k, vals]) => vals.forEach((v) => q.append(k, v)));
+    history.replaceState(null, '', q.toString() ? `?${q}` : location.pathname);
+  }
+  const clear = () => { boxes.forEach((b) => (b.checked = false)); apply(); };
+  boxes.forEach((b) => b.addEventListener('change', apply));
+  document.getElementById('clear-filters')!.addEventListener('click', clear);
+  document.getElementById('clear-empty')!.addEventListener('click', clear);
+  apply();
+</script>
+
+<style>
+  .shop { display: grid; grid-template-columns: 220px 1fr; gap: 2rem; padding-bottom: 3rem; }
+  .filters { position: sticky; top: 90px; align-self: start; }
+  .filters-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .filters h2 { font-size: 1.15rem; }
+  fieldset { border: 0; padding: 0; margin: 0 0 1.25rem; }
+  legend { font-weight: 600; margin-bottom: 0.4rem; font-family: var(--font-display); }
+  label { display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0; cursor: pointer; font-size: 0.95rem; }
+  input[type='checkbox'] { accent-color: var(--teal); width: 16px; height: 16px; }
+  .clear { background: none; border: 0; color: var(--plum); text-decoration: underline; cursor: pointer; font: inherit; font-size: 0.88rem; padding: 0; }
+  .count { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+  .empty { text-align: center; padding: 3rem 0; color: var(--muted); }
+  @media (max-width: 760px) {
+    .shop { grid-template-columns: 1fr; }
+    .filters { position: static; background: var(--paper); padding: 1rem; border-radius: var(--radius); }
+    fieldset { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; margin-bottom: 0.9rem; }
+    legend { width: 100%; }
+  }
+</style>
